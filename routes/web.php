@@ -100,6 +100,7 @@ Route::post('/simulasi_ujian/update/{id}', [SimulasiUjianController::class, 'upd
 //simulasi_ujian_mahasiswa
 Route::get('/simulasi_ujian_mahasiswa', [SimulasiUjianMahasiswaController::class, 'index']);
 Route::get('/simulasi_ujian_mahasiswa_review/{id}/{paket_id}/{sesi}', [SimulasiUjianMahasiswaController::class, 'review']);
+Route::get('/simulasi_ujian_mahasiswa_review/{id}/{paket_id}/{sesi}/{mhs_id}', [SimulasiUjianMahasiswaController::class, 'review']);
 Route::get('/simulasi_ujian_selesai/{id}/{type}', [SimulasiUjianMahasiswaController::class, 'selesai']);
 Route::get('/simulasi_ujian_kerjakan/{id}/{paket_id}/{soal_id}', [SimulasiUjianMahasiswaController::class, 'kerjakan']);
 Route::post('/simulasi_ujian_submit', [SimulasiUjianMahasiswaController::class, 'lanjut']);

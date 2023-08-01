@@ -591,7 +591,7 @@ class SimulasiLatihanMahasiswaController extends Controller
         return $result;
     }
 
-    public function review($simulasi_id,$paket_id,$sesi)
+    public function review($simulasi_id,$paket_id,$sesi,$mhs_id=null)
     {
         $soal = DB::table('paket_soal')->where('paket_id',$paket_id)->get();
         $mhs = DB::table('mahasiswa')->where('user_id',Auth::user()->id)->first();
@@ -599,21 +599,42 @@ class SimulasiLatihanMahasiswaController extends Controller
         $jawaban = [];
         foreach ($soal as $key => $value) 
         {
-            if($sesi == 0)
+            if($mhs)
             {
-                $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
-                  ->where('mahasiswa_id',$mhs->id)
-                  ->where('paket_id',$paket_id)
-                  ->where('soal_id',$value->soal_id)
-                  ->first();
+                if($sesi == 0)
+                {
+                    $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
+                      ->where('mahasiswa_id',$mhs->id)
+                      ->where('paket_id',$paket_id)
+                      ->where('soal_id',$value->soal_id)
+                      ->first();
+                }else
+                {
+                    $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
+                      ->where('mahasiswa_id',$mhs->id)
+                      ->where('paket_id',$paket_id)
+                      ->where('soal_id',$value->soal_id)
+                      ->where('sesi',$sesi)
+                      ->first();
+                }
             }else
             {
-                $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
-                  ->where('mahasiswa_id',$mhs->id)
-                  ->where('paket_id',$paket_id)
-                  ->where('soal_id',$value->soal_id)
-                  ->where('sesi',$sesi)
-                  ->first();
+                if($sesi == 0)
+                {
+                    $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
+                      ->where('mahasiswa_id',$mhs->id)
+                      ->where('paket_id',$paket_id)
+                      ->where('soal_id',$value->soal_id)
+                      ->first();
+                }else
+                {
+                    $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
+                      ->where('mahasiswa_id',$mhs->id)
+                      ->where('paket_id',$paket_id)
+                      ->where('soal_id',$value->soal_id)
+                      ->where('sesi',$sesi)
+                      ->first();
+                }
             }
             if($log)
             {

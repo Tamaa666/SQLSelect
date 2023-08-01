@@ -224,6 +224,7 @@ class SimulasiUjianMahasiswaController extends Controller
               $soalTotalBenar = count($log);
               $jumlahSoal = count($totalSoal);
               $nilai = $soalTotalBenar / $jumlahSoal * 100;
+             // dd($nilai);
            }else
            {
               foreach ($log as $key => $value) 
@@ -237,13 +238,15 @@ class SimulasiUjianMahasiswaController extends Controller
               }
            }
            $createdAt = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
-           DB::table('simulasi_hasil')->insert([
+           $oke = DB::table('simulasi_hasil')->insert([
                 'simulasi_id'=>$simulasi_id,
                 'mahasiswa_id'=>$mhs->id,
                 'nilai'=>$nilai,
                 'sesi'=>$sesi,
+                'type'=>'ujian',
                 'created_at'=>$createdAt
             ]);
+           //dd($oke);
            if($type == 'selesai')
            {
                 return redirect('simulasi_ujian_mahasiswa')->with('success','Simulai sudah selesai dikerjakan');
@@ -346,16 +349,18 @@ class SimulasiUjianMahasiswaController extends Controller
                     if($tableName == null)
                     {
                         $namaTable = explode('FROM ', $request->log_file);
+
                         if(isset($namaTable[1]))
                         {
                             $namaTable = explode(' ', $namaTable[1]);
                             if(isset($namaTable[0]))
                             {
+                                //dd($namaTable);
                                 $tableName = $namaTable[0];
                             }
                         }
                     }
-
+                   // dd($tableName);
                     $tableNameJawaban = null;
                     $namaTable = explode('from ', $soal->jawaban);
                     if(isset($namaTable[1]))

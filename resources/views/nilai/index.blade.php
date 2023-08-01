@@ -69,14 +69,14 @@
                             @foreach($nilai[$item->id] as $nilaiKey => $itemNilai)
                               <li>
                                 Nilai Percobaan Ke - {{$nilaiKey}} : {{$itemNilai}} <br> 
-                                <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/'.$nilaiKey)}}"> Review</a>
+                                <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/'.$nilaiKey.'/'.$item->mahasiswa_id)}}"> Review</a>
                               </li>
                             @endforeach
                           </ul>
                         @else
                           Nilai : {{$nilai[$item->id]}} 
                                   <br>
-                                  <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/0')}}">Review</a>
+                                  <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/0'.'/'.$item->mahasiswa_id)}}">Review</a>
                         @endif
                       @else
                         Nilai : - 
@@ -88,14 +88,14 @@
                             @foreach($nilai[$item->id] as $nilaiKey => $itemNilai)
                               <li>
                                 Nilai Percobaan Ke - {{$nilaiKey}} : {{$itemNilai}} <br>
-                                <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/'.$nilaiKey)}}">Review</a>
+                                <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/'.$nilaiKey.'/'.$item->mahasiswa_id)}}">Review</a>
                               </li>
                             @endforeach
                           </ul>
                         @else
                           Nilai : {{$nilai[$item->id]}}  
                                   <br>
-                                  <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/0')}}">Review</a>
+                                  <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/0'.'/'.$item->mahasiswa_id)}}">Review</a>
                         @endif
                       @else
                         Nilai : -
