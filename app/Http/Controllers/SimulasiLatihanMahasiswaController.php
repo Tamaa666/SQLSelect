@@ -658,7 +658,7 @@ class SimulasiLatihanMahasiswaController extends Controller
                 }
             }
         }
-        dd($jawaban);
+       // dd($jawaban);
         return view('simulasi_latihan_mahasiswa.review',compact('jawaban','simulasi','soal'));
     }
 }
