@@ -637,7 +637,7 @@ class SimulasiLatihanMahasiswaController extends Controller
                       ->first();
                 }
             }
-            dd($sesi);
+            //dd($sesi);
             if($log)
             {
                 $soalSql = DB::table('soal_sql')->where('id',$value->soal_id)->first();
