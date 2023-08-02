@@ -16,72 +16,79 @@ class NilaiSimulasiController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $now = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
         $now = strtotime($now);
-        $data = DB::table('simulasi as sml')
-                ->join('kelas as kls','kls.id','=','sml.kelas_id')
-                ->join('mahasiswa as mhs','mhs.kelas_id','=','kls.id')
-                ->join('paket as pk','pk.id','=','sml.paket_id')
-                ->select('sml.*','kls.nama as nama_kelas','pk.nama as nama_paket','mhs.id as mahasiswa_id','mhs.nama as nama_mahasiswa')
-                ->orderBy('sml.start_date_time','ASC')
-                ->get();
+        $data = [];
         $materi = [];
         $paket = [];
         $pernah = [];
         $soalPertama = [];
         $nilai = [];
         $percobaan = [];
-        foreach ($data as $key => $value) 
+        if(count($request->all())>0)
         {
-            $materi[$value->id] = [];
-            $materiSimulasi = DB::table('simulasi_materi')->where('simulasi_id',$value->id)->get();
-            foreach ($materiSimulasi as $materiSimulasiKey => $materiSimulasiValue) 
+            $data = DB::table('simulasi as sml')
+                ->join('kelas as kls','kls.id','=','sml.kelas_id')
+                ->join('mahasiswa as mhs','mhs.kelas_id','=','kls.id')
+                ->join('paket as pk','pk.id','=','sml.paket_id')
+                ->where('sml.id',$request->simulasi_id)
+                ->select('sml.*','kls.nama as nama_kelas','pk.nama as nama_paket','mhs.id as mahasiswa_id','mhs.nama as nama_mahasiswa')
+                ->orderBy('sml.start_date_time','ASC')
+                ->get();
+            
+            foreach ($data as $key => $value) 
             {
-                $materiData = DB::table('materi')->where('id',$materiSimulasiValue->materi_id)->first();
-                if($materiData)
+                $materi[$value->id] = [];
+                $materiSimulasi = DB::table('simulasi_materi')->where('simulasi_id',$value->id)->get();
+                foreach ($materiSimulasi as $materiSimulasiKey => $materiSimulasiValue) 
                 {
-                    $materi[$value->id][$materiSimulasiKey]['nama'] = $materiData->nama;
-                    $materi[$value->id][$materiSimulasiKey]['file'] = url('/asset_application/materi').'/'.$materiData->file;
+                    $materiData = DB::table('materi')->where('id',$materiSimulasiValue->materi_id)->first();
+                    if($materiData)
+                    {
+                        $materi[$value->id][$materiSimulasiKey]['nama'] = $materiData->nama;
+                        $materi[$value->id][$materiSimulasiKey]['file'] = url('/asset_application/materi').'/'.$materiData->file;
+                    }
                 }
-            }
 
-            $paketdata = DB::table('paket_soal as pk')
-                        ->join('soal_sql as soal','soal.id','=','pk.soal_id')
-                        ->where('pk.paket_id',$value->paket_id)
-                        ->count();
-            $paket[$value->id] = $paketdata;
-            $nilai[$value->id] = 0;
-            $percobaan[$value->id] = 1;
-            $dataNilai = DB::table('simulasi_hasil')
-                        ->where('simulasi_id',$value->id)
-                        ->where('mahasiswa_id',$value->mahasiswa_id)
-                        ->groupBy('sesi')
-                        ->get();
-            if(count($dataNilai) == 1)
-            {
+                $paketdata = DB::table('paket_soal as pk')
+                            ->join('soal_sql as soal','soal.id','=','pk.soal_id')
+                            ->where('pk.paket_id',$value->paket_id)
+                            ->count();
+                $paket[$value->id] = $paketdata;
+                $nilai[$value->id][$value->mahasiswa_id] = 0;
+                $percobaan[$value->id][$value->mahasiswa_id] = 1;
                 $dataNilai = DB::table('simulasi_hasil')
-                        ->where('simulasi_id',$value->id)
-                        ->where('mahasiswa_id',$value->mahasiswa_id)
-                        ->first();
-                $nilai[$value->id] = $dataNilai->nilai;
-            }elseif(count($dataNilai) > 1)
-            {
-                $percobaan[$value->id] = 2;
-                $nilai[$value->id] = [];
-                $dataNilai = DB::table('simulasi_hasil')
-                        ->where('simulasi_id',$value->id)
-                        ->where('mahasiswa_id',$value->mahasiswa_id)
-                        ->get();
-                $sesinya = 0;
-                foreach ($dataNilai as $dataNilaiKey => $dataNilaiValue) 
+                            ->where('simulasi_id',$value->id)
+                            ->where('mahasiswa_id',$value->mahasiswa_id)
+                            ->groupBy('sesi')
+                            ->get();
+                if(count($dataNilai) == 1)
                 {
-                   $sesinya++;
-                   $nilai[$value->id][$sesinya] = $dataNilaiValue->nilai;
+                    $dataNilai = DB::table('simulasi_hasil')
+                            ->where('simulasi_id',$value->id)
+                            ->where('mahasiswa_id',$value->mahasiswa_id)
+                            ->first();
+                    $nilai[$value->id][$value->mahasiswa_id] = $dataNilai->nilai;
+                }elseif(count($dataNilai) > 1)
+                {
+                    $percobaan[$value->id][$value->mahasiswa_id] = 2;
+                    $nilai[$value->id][$value->mahasiswa_id] = [];
+                    $dataNilai = DB::table('simulasi_hasil')
+                            ->where('simulasi_id',$value->id)
+                            ->where('mahasiswa_id',$value->mahasiswa_id)
+                            ->get();
+                    $sesinya = 0;
+                    foreach ($dataNilai as $dataNilaiKey => $dataNilaiValue) 
+                    {
+                       $sesinya++;
+                       $nilai[$value->id][$value->mahasiswa_id][$sesinya] = $dataNilaiValue->nilai;
+                    }
                 }
             }
         }
+        //dd($nilai);
         Session::put('data',$data);
         Session::put('materi',$materi);
         Session::put('now',$now);
@@ -90,7 +97,8 @@ class NilaiSimulasiController extends Controller
         Session::put('soalPertama',$soalPertama);
         Session::put('nilai',$nilai);
         Session::put('percobaan',$percobaan);
-        return view('nilai.index',compact('data','materi','now','paket','pernah','soalPertama','nilai','percobaan'));
+        $simulasiList = DB::table('simulasi')->get();
+        return view('nilai.index',compact('data','materi','now','paket','pernah','soalPertama','nilai','percobaan','simulasiList','request'));
     }
 
     public function export() 

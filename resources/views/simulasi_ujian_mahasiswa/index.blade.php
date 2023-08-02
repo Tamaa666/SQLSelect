@@ -119,11 +119,11 @@
                   <td>
                     @if(strtotime($item->end_date_time) >= $now)
                       @if($nilai[$item->id] > 0)
-                        <a href="{{url('simulasi_ujian_kerjakan/'.$item->id.'/'.$item->paket_id.'/'.$soalPertama[$item->id])}}" 
-                              style="color: black;" 
-                              class="fa fa-edit btn btn-warning btn-sm"> 
-                              Kerjakan Ulang
-                        </a> 
+                      <a style="cursor: pointer;color: black;" 
+                         onclick="return alert('Ujian Telah Dikerjakan')" 
+                         class="fa fa-edit btn btn-default btn-sm"> 
+                        Telah Dikerjakan
+                      </a>
                       @else
                         @if($pernah[$item->id] != null)
                           <a  href="{{url('simulasi_ujian_kerjakan/'.$item->id.'/'.$item->paket_id.'/'.$pernah[$item->id])}}" 

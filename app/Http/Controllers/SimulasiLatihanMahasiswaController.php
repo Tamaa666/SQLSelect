@@ -601,6 +601,7 @@ class SimulasiLatihanMahasiswaController extends Controller
         {
             if($mhs)
             {
+                //dd($mhs);
                 if($sesi == 0)
                 {
                     $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
@@ -622,20 +623,21 @@ class SimulasiLatihanMahasiswaController extends Controller
                 if($sesi == 0)
                 {
                     $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
-                      ->where('mahasiswa_id',$mhs->id)
+                      ->where('mahasiswa_id',$mhs_id)
                       ->where('paket_id',$paket_id)
                       ->where('soal_id',$value->soal_id)
                       ->first();
                 }else
                 {
                     $log = DB::table('simulasi_log')->where('simulasi_id',$simulasi_id)
-                      ->where('mahasiswa_id',$mhs->id)
+                      ->where('mahasiswa_id',$mhs_id)
                       ->where('paket_id',$paket_id)
                       ->where('soal_id',$value->soal_id)
                       ->where('sesi',$sesi)
                       ->first();
                 }
             }
+            dd($sesi);
             if($log)
             {
                 $soalSql = DB::table('soal_sql')->where('id',$value->soal_id)->first();
@@ -656,6 +658,7 @@ class SimulasiLatihanMahasiswaController extends Controller
                 }
             }
         }
+        dd($jawaban);
         return view('simulasi_latihan_mahasiswa.review',compact('jawaban','simulasi','soal'));
     }
 }

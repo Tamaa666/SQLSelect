@@ -27,6 +27,30 @@
     <section class="content">
       <div class="row">
         <div class="col-12">
+          <form action="{{url('nilai_simulasi')}}">
+          <div class="card">
+            <div class="card-header">
+              <div class="row">
+                <div class="col-sm-8 pt-2">
+                  <select class="form-control" name="simulasi_id" required>
+                    <option value="" selected disabled>Pilih Simulasi</option>
+                    @foreach($simulasiList as $key => $itemLlist)
+                      <option value="{{$itemLlist->id}}" {{$request->simulasi_id == $itemLlist->id ? 'selected':''}}>
+                        {{$itemLlist->nama}}
+                      </option>
+                    @endforeach
+                  </select>
+                </div>
+                <div class="col-sm-4 pt-2" align="right">
+                 <button class="btn btn-primary" type="submit">Filter</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          </form>
+        </div>
+
+        <div class="col-12">
           <div class="card">
             <div class="card-header">
               <div class="row">
@@ -63,10 +87,10 @@
                   <td>{{$item->nama_kelas}}</td>
                   <td>
                     @if(strtotime($item->end_date_time) >= $now)
-                      @if($nilai[$item->id] > 0)
-                        @if($percobaan[$item->id] > 1)
+                      @if($nilai[$item->id][$item->mahasiswa_id] > 0)
+                        @if($percobaan[$item->id][$item->mahasiswa_id] > 1)
                           <ul>
-                            @foreach($nilai[$item->id] as $nilaiKey => $itemNilai)
+                            @foreach($nilai[$item->id][$item->mahasiswa_id] as $nilaiKey => $itemNilai)
                               <li>
                                 Nilai Percobaan Ke - {{$nilaiKey}} : {{$itemNilai}} <br> 
                                 <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/'.$nilaiKey.'/'.$item->mahasiswa_id)}}"> Review</a>
@@ -74,7 +98,7 @@
                             @endforeach
                           </ul>
                         @else
-                          Nilai : {{$nilai[$item->id]}} 
+                          Nilai : {{$nilai[$item->id][$item->mahasiswa_id]}} 
                                   <br>
                                   <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/0'.'/'.$item->mahasiswa_id)}}">Review</a>
                         @endif
@@ -82,10 +106,10 @@
                         Nilai : - 
                       @endif
                     @else
-                     @if($nilai[$item->id] > 0)
+                     @if($nilai[$item->id][$item->mahasiswa_id] > 0)
                         @if($percobaan[$item->id] > 1)
                           <ul>
-                            @foreach($nilai[$item->id] as $nilaiKey => $itemNilai)
+                            @foreach($nilai[$item->id][$item->mahasiswa_id] as $nilaiKey => $itemNilai)
                               <li>
                                 Nilai Percobaan Ke - {{$nilaiKey}} : {{$itemNilai}} <br>
                                 <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/'.$nilaiKey.'/'.$item->mahasiswa_id)}}">Review</a>
@@ -93,7 +117,7 @@
                             @endforeach
                           </ul>
                         @else
-                          Nilai : {{$nilai[$item->id]}}  
+                          Nilai : {{$nilai[$item->id][$item->mahasiswa_id]}}  
                                   <br>
                                   <a href="{{url('simulasi_latihan_mahasiswa_review/'.$item->id.'/'.$item->paket_id.'/0'.'/'.$item->mahasiswa_id)}}">Review</a>
                         @endif
