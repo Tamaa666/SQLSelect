@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Session;
 use Auth;
 use DB;
+use Shuchkin\SimpleXLSX;
 class MahasiswaController extends Controller
 {
     public function __construct()
@@ -103,5 +104,75 @@ class MahasiswaController extends Controller
     {
         DB::table('mahasiswa')->where('id',$id)->delete();
         return redirect('mahasiswa')->with('success','Berhasil menghapus data mahasiswa');
+    }
+
+    public function import(Request $request)
+    {
+        $file = $this->uploadFile($request,'file');
+        if ( $xlsx = SimpleXLSX::parse('asset_application/import/data/'.$file)) {
+            $header_values = $rows = [];
+            foreach ( $xlsx->rows() as $k => $r ) {
+                if ( $k === 0 ) {
+                    $header_values = $r;
+                    continue;
+                }
+                $rows[] = array_combine( $header_values, $r );
+            }
+            
+            foreach ($rows as $key => $value) 
+            {
+               $checkKelas = DB::table('kelas')->where('id',$rows[$key]['ID_KELAS'])->first();
+               if(!$checkKelas)
+               {
+                    return redirect()->back()->with('error','Gagal mengimport data ID_KELAS '.$rows[$key]['ID_KELAS'].' tidak ditemukan mohon perbaiki file anda dan check apakah ID_KELAS yang anda masukkan ada di daftar table kelas di menu kelas');
+               }
+
+               $checkMhs = DB::table('users')->where('username',$rows[$key]['NIM'])->first();
+               if($checkMhs)
+               {
+                    return redirect()->back()->with('error','Gagal mengimport data NIM '.$rows[$key]['ID_KELAS'].' sudah digunakan mohon perbaiki file anda');
+               }
+            }
+
+            $createdAt = Carbon::now('Asia/Jakarta')->format('Y-m-d H:i:s');
+            foreach ($rows as $key => $value)
+            {
+                $userId = DB::table('users')->insertGetId([
+                            'role'=>'mahasiswa',
+                            'username'=>$rows[$key]['NIM'],
+                            'name'=>$rows[$key]['NAMA'],
+                            'password'=>bcrypt($rows[$key]['NIM']),
+                            'created_at'=>$createdAt
+                        ]);
+
+                        DB::table('mahasiswa')->insert([
+                            'user_id'=>$userId,
+                            'kelas_id'=>$rows[$key]['ID_KELAS'],
+                            'nama'=>$rows[$key]['NAMA'],
+                            'nim'=>$rows[$key]['NIM'],
+                            'created_at'=>$createdAt
+                        ]);
+            }
+        }else
+        {
+            return redirect()->back()->with('error','Gagal mengimport data salah pada alamat url');
+        }
+
+        return redirect()->back()->with('success','Berhasil mengimport data mahasiswa');
+    }
+
+    public function uploadFile(Request $request, $oke)
+    {
+        $result = '';
+        $file = $request->file($oke);
+        $name = $file->getClientOriginalName();
+        $extension = explode('.', $name);
+        $extension = strtolower(end($extension));
+        $key = rand() . '_' . $oke . '_import_data_mhs';
+        $tmp_file_name = "{$key}.{$extension}";
+        $tmp_file_path = "asset_application/import/data";
+        $file->move($tmp_file_path, $tmp_file_name);
+        $result = $tmp_file_name;
+        return $result;
     }
 }

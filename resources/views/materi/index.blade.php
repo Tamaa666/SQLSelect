@@ -64,7 +64,7 @@
                   <td>{{$item->nama}}</td>
                   <td>{{$item->deskripsi}}</td>
                   <td>
-                  	<a href="{{url('asset_application/soal/'.$item->file)}}" class="fa fa-file-code-o" target="_blank"> 
+                  	<a href="{{url('asset_application/materi/'.$item->file)}}" class="fa fa-file-code-o" target="_blank"> 
                   		Lihat
                   	</a>
                   </td>

@@ -15,6 +15,7 @@ use App\Http\Controllers\SimulasiUjianMahasiswaController;
 use App\Http\Controllers\SoalSQLController;
 use App\Http\Controllers\PaketSoalController;
 use App\Http\Controllers\DataTableController;
+use App\Http\Controllers\TestCodeController;
 
 /*                                                                       *\
 |-------------------------------------------------------------------------|
@@ -56,6 +57,7 @@ Route::get('/mahasiswa/edit/{id}', [MahasiswaController::class, 'edit']);
 Route::get('/mahasiswa/delete/{id}', [MahasiswaController::class, 'delete']);
 Route::post('/mahasiswa/store', [MahasiswaController::class, 'store']);
 Route::post('/mahasiswa/update/{id}', [MahasiswaController::class, 'update']);
+Route::post('/mahasiswa/import', [MahasiswaController::class, 'import']);
 //data_table
 Route::get('/data_table', [DataTableController::class, 'index']);
 Route::get('/data_table/create', [DataTableController::class, 'create']);
@@ -108,3 +110,6 @@ Route::post('/simulasi_ujian_submit', [SimulasiUjianMahasiswaController::class, 
 //nilai mahasiswa
 Route::get('/nilai_simulasi', [NilaiSimulasiController::class, 'index']);
 Route::get('/nilai_export', [NilaiSimulasiController::class, 'export']);
+
+//test_code
+Route::get('/test_code', [TestCodeController::class, 'test']);

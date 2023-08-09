@@ -35,6 +35,9 @@
               	</div>
               	<div class="col-sm-6" align="right">
               		<a href="{{url('mahasiswa/create')}}" class="btn btn-primary"><i class="fa fa-plus"></i> Tambah Data</a>
+                  &nbsp;
+                  <a class="btn btn-info" style="cursor: pointer;" data-toggle="modal" data-target="#import">
+                    <i class="fa fa-file-excel-o"></i> Import Data</a>
               	</div>
               </div>
             </div>
@@ -93,6 +96,42 @@
     </section>
     <!-- /.content -->
   </div>
+
+  <!-- The Modal -->
+<div class="modal" id="import">
+  <div class="modal-dialog modal-xl">
+    <form action="{{url('mahasiswa/import')}}" method="POST" enctype="multipart/form-data">
+      @csrf
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Import Data Mahasiswa</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <p>
+          Untuk melihat format isi yang dapat di import / template bisa download 
+          <a href="{{url('asset_application/import/template.xlsx')}}" download>disini</a>
+        </p>
+         <div class="form-group">
+            <label>Upload File Import</label>
+            <input type="file" name="file" required class="form-control">
+         </div>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button class="btn btn-success" type="submit">Import</button>
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Tutup</button>
+      </div>
+
+    </div>
+  </form>
+  </div>
+</div>
 @endsection
 
 @section('script')

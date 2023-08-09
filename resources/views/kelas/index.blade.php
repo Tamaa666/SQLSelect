@@ -49,6 +49,7 @@
                 <thead>
                 <tr>
                   <th>No</th>
+                  <th>ID KELAS</th>
                   <th>Nama</th>
                   <th>Created At</th>
                   <th>Updated At</th>
@@ -59,6 +60,7 @@
                 @foreach($data as $key => $item)
                 <tr>
                   <td>{{$key+1}}</td>
+                  <td>{{$item->id}}</td>
                   <td>{{$item->nama}}</td>
                   <td>{{$item->created_at}}</td>
                   <td>{{$item->updated_at}}</td>

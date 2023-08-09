@@ -564,7 +564,7 @@ class SimulasiLatihanMahasiswaController extends Controller
         }
     }
 
-    public function executeSql($sqlJawaban)
+    public function executeSql($sqlJawaban) // line metode db statment
     {
         try { 
             $sqlJawaban = DB::select($sqlJawaban);
